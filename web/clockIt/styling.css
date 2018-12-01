@@ -1,0 +1,155 @@
+/* Mobile first */
+
+/* * * * * * * * * * *
+*   body
+* * * * * * * * * * */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    font-size: 10vw;
+}
+
+
+/* * * * * * * * * * *
+*   nav
+* * * * * * * * * * */
+nav {
+    font-size: 1.3em;
+    width: 100%;
+}
+
+/* * * * * * * * * * *
+*   timer
+* * * * * * * * * * */
+.timer {
+    font-size: 5em;
+
+}
+
+#clockIn input[type=submit] {
+    font-size: 3em;
+    border-radius: 1em;
+    background-color: #006000;
+    border: 5px solid green;
+    color: white;
+    width: 6em;
+}
+
+#clockOut input[type=submit] {
+    font-size: 3em;
+    border-radius: 1em;
+    background-color: red;
+    border: 5px solid #cc0000;
+    color: white;
+    width: 6em;
+}
+
+.export {
+    font-size: 3em;
+    padding: 0.5em 0em;
+}
+
+#shareImg {
+    width: 1em;
+    padding: 0.1em;
+    background-color: gray;
+    border: 1px solid black;
+}
+
+
+/* * * * * * * * * * *
+*   timeSheet
+* * * * * * * * * * */
+.weekNav {
+    font-size: 2em;
+}
+
+/* Experimental dynamic week nav
+.weekNav .nav .nav-item a::after {
+    content: "Su";
+}
+*/
+
+.weekContent {
+    font-size: 1.25em;
+    width: 100%;
+}
+
+.weekContent table {
+
+}
+
+#activitiesList input {
+    width: 100%;
+    margin: 0.25em;
+}
+
+/*Desktop*/
+@media (min-width : 730px) {
+    /* * * * * * * * * * *
+    *   body
+    * * * * * * * * * * */
+    body {
+
+    }
+
+
+    /* * * * * * * * * * *
+    *   nav
+    * * * * * * * * * * */
+    nav {
+        font-size: 2em;
+    }
+
+    /* * * * * * * * * * *
+    *   timer
+    * * * * * * * * * * */
+    .timer {
+        font-size: 9em;
+
+    }
+
+    #clockIn input[type=submit] {
+        font-size: 5em;
+        border-radius: 1em;
+        background-color: #006000;
+        border: 5px solid green;
+        color: white;
+        width: 6em;
+    }
+
+    #clockOut input[type=submit] {
+        font-size: 5em;
+        border-radius: 1em;
+        background-color: red;
+        border: 5px solid #cc0000;
+        color: white;
+        width: 6em;
+    }
+
+    .export {
+        font-size: 5em;
+        padding: 0.5em 0em;
+    }
+
+    /* * * * * * * * * * *
+    *   timeSheet
+    * * * * * * * * * * */
+    .weekNav {
+        font-size: 3em;
+    }
+    /* Experimental dynamic week nav
+        .weekNav .nav .nav-item a::after {
+            content: "Someday";
+        }
+    */
+    .weekContent {
+        width: 80%;
+    }
+
+    .weekContent table {
+
+    }
+}
