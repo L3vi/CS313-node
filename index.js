@@ -4,13 +4,11 @@ const PORT = process.env.PORT || 5000;
 
 const path = require('path');
 const parse = require('body-parser');
-// Implement passport for authentication of user
-const passport = require('passport');
 
 // Implement pg for postgres SQL access
-const { Pool } = require('pg');
-const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({connectionString: connectionString});
+// const { Pool } = require('pg');
+// const connectionString = process.env.DATABASE_URL;
+// const pool = new Pool({connectionString: connectionString});
 
 app.use(express.static(path.join(__dirname, 'public')))
 	.set('views', path.join(__dirname, 'views'))
