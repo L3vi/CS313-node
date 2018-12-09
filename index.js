@@ -1,3 +1,7 @@
+/**
+* Main Clock-It Controller
+*/
+
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -5,21 +9,21 @@ const PORT = process.env.PORT || 5000;
 const path = require('path');
 const parse = require('body-parser');
 
-// Implement pg for postgres SQL access
-// const { Pool } = require('pg');
-// const connectionString = process.env.DATABASE_URL;
-// const pool = new Pool({connectionString: connectionString});
+// Controllers
+const activities = require('./controllers/activities-controller.js');
+const accounts = require('./controllers/accounts-controller.js');
+const clockit = require('./controllers/clockit-controller.js');
 
-app.use(express.static(path.join(__dirname, 'public')))
-	.set('views', path.join(__dirname, 'views'))
-	.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, '/public/')))
+	// .set('views', path.join(__dirname, 'views'))
 	.get('/', (request, response) => {
-		response.send("Hello World!");
+		// response.render('home');
+
 	})
+	.get('/entries', clockit.getEntries)
+	.post('/entries', clockit.createEntry)
 	.get('/account', (request, response) => {
 		response.send("Hello World!");
 	})
-	.get('/activities', (request, response) => {
-		response.send("Hello World!");
-	})
+	.get('/activities', activities.getActivities)
 	.listen(PORT, () => console.log(`Listening on ${ PORT }`));

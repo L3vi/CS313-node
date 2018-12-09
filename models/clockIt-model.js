@@ -1,5 +1,46 @@
 // Clock-It Model
 
+// Implement pg for postgres SQL access
+const { Pool } = require('pg');
+const connectionString = process.env.DATABASE_URL || "postgres://clockituser:time@localhost:5432/clockit";;
+const pool = new Pool({connectionString: connectionString});
+
+
+function getEntriesFromDB(id, callback) {
+    let sql = 'SELECT * FROM timeentries WHERE activity_id = $1::int';
+    let params = [id];
+
+    pool.query(sql, params, (error, result) => {
+        if (error) {
+            console.log("Error in query");
+            callback(error);
+        } else {
+            console.log("Found it! " + JSON.stringify(result.rows));
+            callback(null, result.rows);
+        }
+    })
+}
+
+function createEntryInDB(id, startDate, callback) {
+    // let sql = 'INSERT INTO timeentries (starttime, activity_id) VALUES ($2, $1) WHERE activity_id = $1::int';
+    // let params = [id, startDate];
+
+    // pool.query(sql, params, (error, result) => {
+    //     if (error) {
+    //         console.log("Error in query");
+    //         callback(error);
+    //     } else {
+    //         console.log("Created new time entry!" + JSON.stringify(result.rows));
+    //         callback(null, result.rows);
+    //     }
+    // })
+}
+
+function updateEntryInDB(id, callback) {
+    
+}
+
+/*
 function startTimeEntry(activity_id) {
     // Create a connection object using the acme connection function
     session_start();
@@ -41,15 +82,10 @@ function endTimeEntry() {
     // Return the indication of success (rows changed)
     return $rowsChanged;
 }
+*/
 
-// Gets list of projects
-function getTimeEntries(activity_id) {
-    $database = getDatabase();
-    $sql = 'SELECT starttime, endtime, notes FROM timeentries WHERE activity_id=:activity_id';
-    $statement = $database->prepare($sql);
-    $statement->bindValue(':activity_id', $activity_id, PDO::PARAM_INT);
-    $statement->execute();
-    $timeEntries = $statement->fetchAll();
-    $statement->closeCursor();
-    return $timeEntries;
+module.exports = {
+    getEntriesFromDB: getEntriesFromDB,
+    createEntryInDB: createEntryInDB,
+    updateEntryInDB: updateEntryInDB
 }

@@ -28,22 +28,23 @@ nav {
 
 }
 
-#clockIn input[type=submit] {
+#clockIt {
     font-size: 3em;
     border-radius: 1em;
+    width: 6em;
+    outline: none;
+}
+
+.clockIn {
     background-color: #006000;
     border: 5px solid green;
     color: white;
-    width: 6em;
 }
 
-#clockOut input[type=submit] {
-    font-size: 3em;
-    border-radius: 1em;
+.clockOut {
     background-color: red;
     border: 5px solid #cc0000;
     color: white;
-    width: 6em;
 }
 
 .export {
