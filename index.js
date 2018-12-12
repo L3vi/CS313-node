@@ -4,7 +4,7 @@
 
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const path = require('path');
 const parse = require('body-parser');
@@ -26,4 +26,4 @@ app.use(express.static(path.join(__dirname, '/public/')))
 		response.send("Hello World!");
 	})
 	.get('/activities', activities.getActivities)
-	.listen(PORT || 5000, () => console.log(`Listening on ${ PORT }`));
+	.listen(PORT, () => console.log(`Listening on ${ PORT }`));

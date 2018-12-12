@@ -1,6 +1,6 @@
 // Clock It Controller
 
-var model = require('../models/clockit-model.js');
+var model = require('./../models/clockit-model.js');
 
 function getEntries(request, response) {
 	console.log("Retrieving time entries");
