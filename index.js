@@ -10,9 +10,9 @@ const path = require('path');
 const parse = require('body-parser');
 
 // Controllers
-const activities = require('./controllers/activities-controller.js');
-const accounts = require('./controllers/accounts-controller.js');
-const clockit = require('./controllers/clockIt-controller.js');
+const activities = require('../controllers/activities-controller.js');
+const accounts = require('../controllers/accounts-controller.js');
+const clockit = require('../controllers/clockIt-controller.js');
 
 app.use(express.static(path.join(__dirname, '/public/')))
 	// .set('views', path.join(__dirname, 'views'))
