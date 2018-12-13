@@ -2,7 +2,7 @@
 
 // Implement pg for postgres SQL access
 const { Pool } = require('pg');
-const connectionString = process.env.DATABASE_URL || "postgres://clockituser:time@localhost:5432/clockit";;
+const connectionString = process.env.DATABASE_URL;// || "postgres://clockituser:time@localhost:5432/clockit";;
 const pool = new Pool({connectionString: connectionString});
 
 
