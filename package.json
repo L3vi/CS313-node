@@ -19,6 +19,7 @@
   "homepage": "https://github.com/L3vi/CS313-node#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "pg": "^7.7.1"
+    "pg": "^7.7.1",
+    "pool": "^0.4.1"
   }
 }
