@@ -25,4 +25,5 @@ app.use(express.static(path.join(__dirname, '/public/')))
 		response.send("Hello World!");
 	})
 	.get('/activities', activities.getActivities)
-	.listen(PORT, () => console.log(`Listening on ${ PORT }`));
+	.listen(process.env.PORT || 5000);
+	// .listen(PORT, () => console.log(`Listening on ${ PORT }`));
