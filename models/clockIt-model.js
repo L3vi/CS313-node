@@ -15,74 +15,43 @@ function getEntriesFromDB(id, callback) {
             console.log("Error in query");
             callback(error);
         } else {
-            console.log("Found it! " + JSON.stringify(result.rows));
+            console.log(`Found ${JSON.stringify(result.rowCount)} items!`);
             callback(null, result.rows);
         }
     })
 }
 
 function createEntryInDB(id, startDate, callback) {
-    // let sql = 'INSERT INTO timeentries (starttime, activity_id) VALUES ($2, $1) WHERE activity_id = $1::int';
-    // let params = [id, startDate];
+    let sql = 'INSERT INTO timeentries (starttime, activity_id) VALUES ($2, $1)';
+    let params = [id, startDate];
 
-    // pool.query(sql, params, (error, result) => {
-    //     if (error) {
-    //         console.log("Error in query");
-    //         callback(error);
-    //     } else {
-    //         console.log("Created new time entry!" + JSON.stringify(result.rows));
-    //         callback(null, result.rows);
-    //     }
-    // })
+    pool.query(sql, params, (error, result) => {
+        if (error) {
+            console.log("Error in query");
+            callback(error);
+        } else {
+            // result.row?
+            callback(null, result.rowCount);
+        }
+    })
 }
 
-function updateEntryInDB(id, callback) {
-    
+function updateEntryInDB(entry_id, endDate, callback) {
+    console.log("Doing DB stuff. . .");
+
+    let sql = 'UPDATE timeentries SET endtime=$2 WHERE id=$1';
+    let params = [entry_id, endDate];
+
+    pool.query(sql, params, (error, result) => {
+        if (error) {
+            console.log("Error in query");
+            callback(error);
+        } else {
+            // result.row?
+            callback(null, result.rowCount);
+        }
+    })
 }
-
-/*
-function startTimeEntry(activity_id) {
-    // Create a connection object using the acme connection function
-    session_start();
-    $db = getDatabase();
-    $startTime = date('M-d-Y') . ' ' . date('h:i:s');
-    $sql = 'INSERT INTO timeentries (starttime, activity_id) VALUES (:starttime, :activity_id)';
-    $statement = $db->prepare($sql);
-    $statement->bindValue(':starttime', $startTime, PDO::PARAM_STR);
-    $statement->bindValue(':activity_id', $activity_id, PDO::PARAM_STR);
-    $statement->execute();
-    $rowsChanged = $statement->rowCount();
-    $statement->closeCursor();
-
-    $getEntryId = 'SELECT id FROM timeentries WHERE starttime=:starttime';
-    $statement2 = $db->prepare($getEntryId);
-    $statement2->bindValue(':starttime', $startTime, PDO::PARAM_STR);
-    $statement2->execute();
-    $entryId = $statement2->fetch();
-    $statement2->closeCursor();
-    $_SESSION['currentEntryId'] = $entryId['id'];
-
-    // Return the indication of success (rows changed)
-    return $rowsChanged;
-}
-
-function endTimeEntry() {
-    // Create a connection object using the acme connection function
-    session_start();
-    $db = getDatabase();
-    $endTime = date('M-d-Y') . ' ' . date('h:i:s');
-    $sql = 'UPDATE timeentries SET endtime = :endtime WHERE id = :entryId';
-    $statement = $db->prepare($sql);
-    $statement->bindValue(':endtime', $endTime, PDO::PARAM_STR);
-    $statement->bindValue(':entryId', $_SESSION['currentEntryId'], PDO::PARAM_INT);
-    $statement->execute();
-    $rowsChanged = $statement->rowCount();
-    $statement->closeCursor();
-
-    // Return the indication of success (rows changed)
-    return $rowsChanged;
-}
-*/
 
 module.exports = {
     getEntriesFromDB: getEntriesFromDB,

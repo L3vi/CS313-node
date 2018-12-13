@@ -1,36 +1,56 @@
 // Clock It Controller
 
 const model = require('../models/clockIt-model.js');
+var session = require('express-session');
+var moment = require('moment');
 
 function getEntries(request, response) {
-	console.log("Retrieving time entries");
-	
+	console.log("Retrieving time entries. . .");
+	// if (typeof request.session.isClockedIn === 'undefined') {
+	// 	request.session.isClockedIn = false;
+	// }
+
 	// Set this to the activity id which will be set in the session.
 	let activity_id = 1;
-
 	model.getEntriesFromDB(activity_id, (error, result) => {
 		if (error) {
 			console.log(error.message);
 		} else {
-			console.log(`Got time entries for the activity with the id of ${activity_id}: ${result}`);
-			response.json(result);
+			console.log(`Got time entries for the activity with the id of ${activity_id}.`);
+			let newResults = result.map(e => {
+				if (!e.endtime) {
+					request.session.entry_id = e.id;
+				}
+				
+				var startDate = moment(e.starttime);
+				var endDate = moment(e.endtime);
+				var total = e.endtime - e.starttime;
+				return {
+					date: moment(startDate).format("ddd, MMM D"),
+					start: moment(startDate).format("h:mm A"),
+					end: e.endtime ? moment(endDate).format("h:mm A") : "",
+					total: e.endtime ? moment.duration(total).humanize() : "In Progress",
+					notes: e.notes ? e.notes : ""
+				};
+			})
+			response.json(newResults);
 		}
 	});
 }
 
 function createEntry(request, response) {
-	console.log("Posting time entries");
+
+	console.log("Sending time entry to the server. . .");
 	
 	// Set this to the activity id which will be set in the session.
 	let activity_id = 1;
-	console.log(request);
-	// let startDate = request.body;
-	// console.log(JSON.stringify(startDate));
-	model.createEntryInDB(activity_id, (error, result) => {
+	let startDate = request.body.startDate;
+	model.createEntryInDB(activity_id, startDate, (error, result) => {
 		if (error) {
 			console.log(error.message);
 		} else {
-			console.log(`Successfully inserted new time entry.`);
+			console.log("Successfully inserted new time entry.");
+			// request.session.isClockedIn = true;
 			response.json(result);
 		}
 	});
@@ -41,19 +61,29 @@ function updateEntry(request, response) {
 	
 	// Set this to the activity id which will be set in the session.
 	let activity_id = 1;
-
-	model.updateEntryInDB(activity_id, (error, result) => {
+	let entry_id = request.session.entry_id;
+	let endDate = request.body.endDate;
+	model.updateEntryInDB(entry_id, endDate, (error, result) => {
 		if (error) {
 			console.log(error.message);
 		} else {
-			console.log(`Got time entries for the activity with the id of ${activity_id}: ${result}`);
+			// request.session.isClockedIn = false;
 			response.json(result);
 		}
 	});
 }
 
+function getTimeClocked(request, response) {
+	let entry_id = request.session.entry_id;
+	console.log(entry_id);
+}
+
 module.exports = {
 	getEntries: getEntries,
 	createEntry: createEntry,
-	updateEntry: updateEntry
+	updateEntry: updateEntry,
+	getTimeClocked: getTimeClocked
+	// clockIn: clockIn,
+	// clockOut: clockOut,
+	// isClockedIn: isClockedIn
 }

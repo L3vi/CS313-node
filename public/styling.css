@@ -23,7 +23,7 @@ nav {
 /* * * * * * * * * * *
 *   timer
 * * * * * * * * * * */
-.timer {
+#timer {
     font-size: 5em;
 
 }

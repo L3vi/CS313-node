@@ -1,12 +1,14 @@
 // Switch to session variable later
 var clockedIn = false;
+var startTime;
+var update;
 
 var workWeek = [
-	"Monday",
-	"Tuesday",
-	"Wednesday",
-	"Thursday",
-	"Friday"
+"Monday",
+"Tuesday",
+"Wednesday",
+"Thursday",
+"Friday"
 ];
 // if screen is smaller use this array instead
 var workWeekSmall = ["M", "Tu", "W", "Th", "F"];
@@ -14,6 +16,8 @@ var workWeekSmall = ["M", "Tu", "W", "Th", "F"];
 window.addEventListener("load", () => {
 	getEntries();
 });
+
+var update = setInterval(displayTimeClockedIn, 100);
 
 function clockIt() {
 	// Grab the button itself. . .
@@ -23,12 +27,48 @@ function clockIt() {
 	if (!clockedIn) {
 		displayClockOutButton(button);
 		createEntry();
+		// getTimeClocked();
 		clockedIn = true;
 	} else {
 		displayClockInButton(button);
+		update = '';
 		completeEntry();
 		clockedIn = false;
 	}
+}
+function pad(time) {
+	return time<10 ? '0' + time : time;
+}
+function displayTimeClockedIn() {
+	// current = new Date();
+ //    var currentTime = new Time(startTime, current);
+
+ //    if (isPressed == true) {
+ //        document.querySelector('#timer').innerHTML = currentTime.display();
+ //    }
+
+    var now = new Date().getTime();
+
+	// Find the distance between now and the count down date
+	if (typeof startTime != 'undefined') {
+		var distance = now - startTime.getTime();
+	}
+	
+
+	// Time calculations for days, hours, minutes and seconds
+	var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+	// var milliseconds = ((distance % (1000)) / 10);
+
+	// Display the result in the element with id="timer"
+
+	if (clockedIn) {
+		document.querySelector("#timer").innerHTML = pad(hours) + ":"
+	+ pad(minutes) + ":" + pad(seconds);// + ":" + milliseconds + "ms ";
+	}
+	
 }
 
 function displayClockOutButton(button) {
@@ -41,12 +81,9 @@ function displayClockInButton(button) {
 	button.innerHTML = "Clock In";
 }
 
-function getEntries() {
+function getTimeClocked() {
 	var xhr = new XMLHttpRequest();
-	// FIND OUT URL TO ACCESS DATABASE
-	xhr.open('GET', '/entries', true);
-	
-	// Ajax function
+	xhr.open('GET', '/getTimeClocked', true);
 	xhr.onreadystatechange = function() {
 		let DONE = 4;
 		let OK = 200;
@@ -54,6 +91,23 @@ function getEntries() {
 			if (xhr.status === OK) {
 				var results = JSON.parse(xhr.responseText);
 				console.log(results);
+			} else {
+				console.log('Error: ' + xhr.status);
+			}
+		}
+	};
+	xhr.send(null);
+}
+
+function getEntries() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/entries', true);
+	xhr.onreadystatechange = function() {
+		let DONE = 4;
+		let OK = 200;
+		if (xhr.readyState === DONE) {
+			if (xhr.status === OK) {
+				var results = JSON.parse(xhr.responseText);
 				let timeSheet = createTimeSheet(results);
 				document.querySelector(".weekContent").innerHTML = timeSheet;
 			} else {
@@ -74,25 +128,13 @@ function createTimeSheet(entries) {
 	// entries.sort();
 
 	entries.forEach(entry => {
-		
-		let startDate = new Date(entry.starttime);
-		let endDate = new Date(entry.endtime);
-		let totalTime = endDate.getHours() - startDate.getHours();
-
-		let dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-		let timeOptions = { hour: 'numeric', minute: '2-digit' };
-		let date = new Date(entry.starttime).toLocaleDateString('en-US', dateOptions);
-		let startTime = new Date(entry.starttime).toLocaleTimeString('en-US', timeOptions);
-		let endTime = new Date(entry.endtime).toLocaleTimeString('en-US', timeOptions);
-		
-		
 		// Display actual date
-		timeSheet += `<tr>\n<td>${date}</td>\n`;
+		timeSheet += `<tr>\n<td>${entry.date}</td>\n`;
 		// Displays starting and ending TIMEs
-		timeSheet += `<td>${startTime}</td>\n`;
-		timeSheet += `<td>${endTime}</td>\n`;
+		timeSheet += `<td>${entry.start}</td>\n`;
+		timeSheet += `<td>${entry.end}</td>\n`;
 		// Calculate total hours/minutes worked
-		timeSheet += `<td>${totalTime} Hours</td>\n`;
+		timeSheet += `<td>${entry.total}</td>\n`;
 		timeSheet += `<td>${entry.notes}</td>\n`;
 	})
 	timeSheet += "\n</tbody>\n</table>";
@@ -101,32 +143,107 @@ function createTimeSheet(entries) {
 
 function createEntry() {
 	let startDate = new Date();
-	let jsonDate = startDate.toJSON();
+	startTime = startDate;
+	// Formats the date properly while also setting it to the local time
+	let formattedDate = new Date(startDate.getTime() - (startDate.getTimezoneOffset() * 60000)).toISOString();
 	console.log(`Creating time entry at ${startDate}`);
 
 	var xhr = new XMLHttpRequest();
-	// FIND OUT URL TO ACCESS DATABASE
 	xhr.open('POST', '/entries', true);
-	
-	// Ajax function
 	xhr.onreadystatechange = function() {
 		let DONE = 4;
 		let OK = 200;
 		if (xhr.readyState === DONE) {
 			if (xhr.status === OK) {
 				var results = JSON.parse(xhr.responseText);
-				console.log(results);
-				console.log("By george, it worked!");
+				console.log("Time entry created.");
+				getEntries();
 			} else {
 				console.log('Error: ' + xhr.status);
 			}
 		}
 	};
 
-	let data = startDate.toISOString();
-	xhr.send(`startDate=${data}`);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.send(JSON.stringify({startDate:formattedDate}));
 }
 
 function completeEntry() {
-	console.log("Completing time entry. . .");
+	let endDate = new Date();
+	// Formats the date properly while also setting it to the local time
+	let formattedDate = new Date(endDate.getTime() - (endDate.getTimezoneOffset() * 60000)).toISOString();
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('PUT', '/entries', true);
+	xhr.onreadystatechange = function() {
+		let DONE = 4;
+		let OK = 200;
+		if (xhr.readyState === DONE) {
+			if (xhr.status === OK) {
+				var results = JSON.parse(xhr.responseText);
+				console.log("Time entry updated.");
+				getEntries();
+			} else {
+				console.log('Error: ' + xhr.status);
+			}
+		}
+	};
+
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.send(JSON.stringify({endDate:formattedDate}));
+}
+
+function isClockedIn() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/isClockedIn', true);
+	xhr.onreadystatechange = function() {
+		let DONE = 4;
+		let OK = 200;
+		if (xhr.readyState === DONE) {
+			if (xhr.status === OK) {
+				// var results = JSON.parse(xhr.responseText);
+				console.log(xhr.responseText);
+				// let button = document.querySelector("#clockIt");
+				// if (!clockedIn) {
+				// 	displayClockOutButton(button);
+				// } else {
+				// 	displayClockInButton(button);
+				// }
+			} else {
+				console.log('Error: ' + xhr.status);
+			}
+		}
+	};
+
+	xhr.send(null);
+}
+
+function clockIn() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/clockIn', true);
+	xhr.onreadystatechange = function() {
+		let DONE = 4;
+		let OK = 200;
+		if (xhr.readyState === DONE) {
+			if (xhr.status === OK) {
+				var results = JSON.parse(xhr.responseText);
+			} else { console.log('Error: ' + xhr.status); }
+		}
+	};
+	xhr.send(null);
+}
+
+function clockOut() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', '/clockOut', true);
+	xhr.onreadystatechange = function() {
+		let DONE = 4;
+		let OK = 200;
+		if (xhr.readyState === DONE) {
+			if (xhr.status === OK) {
+				var results = JSON.parse(xhr.responseText);
+			} else { console.log('Error: ' + xhr.status); }
+		}
+	};
+	xhr.send(null);
 }
