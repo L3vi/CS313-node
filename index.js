@@ -32,18 +32,17 @@ app.use(express.static(path.join(__dirname, '/public/')))
 	})
 	.get('/entries', clockit.getEntries)
 	.post('/entries', clockit.createEntry)
-	.get('/getTimeClocked', clockit.getTimeClocked)
-	// .get('/clockIn', (request, response) => {
-	// 	request.session.isClockedIn = true;
-	// 	console.log(request.session);
-	// })
-	// .get('/clockOut', (request, response) => {
-	// 	request.session.isClockedIn = false;
-	// 	console.log(request.session);
-	// })
-	// .get('/isClockedIn', (request, response) => {
-	// 	console.log(request.session);
-	// })
+	.get('/clockIn', (request, response) => {
+		request.session.isClockedIn = true;
+		console.log(request.session);
+	})
+	.get('/clockOut', (request, response) => {
+		request.session.isClockedIn = false;
+		console.log(request.session);
+	})
+	.get('/isClockedIn', (request, response) => {
+		console.log(request.session);
+	})
 	.put('/entries', clockit.updateEntry)
 	.get('/account', (request, response) => {
 		response.send("Hello World!");

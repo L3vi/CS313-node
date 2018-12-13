@@ -27,7 +27,6 @@ function clockIt() {
 	if (!clockedIn) {
 		displayClockOutButton(button);
 		createEntry();
-		// getTimeClocked();
 		clockedIn = true;
 	} else {
 		displayClockInButton(button);
@@ -79,24 +78,6 @@ function displayClockOutButton(button) {
 function displayClockInButton(button) {
 	button.classList.replace("clockOut", "clockIn");
 	button.innerHTML = "Clock In";
-}
-
-function getTimeClocked() {
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', '/getTimeClocked', true);
-	xhr.onreadystatechange = function() {
-		let DONE = 4;
-		let OK = 200;
-		if (xhr.readyState === DONE) {
-			if (xhr.status === OK) {
-				var results = JSON.parse(xhr.responseText);
-				console.log(results);
-			} else {
-				console.log('Error: ' + xhr.status);
-			}
-		}
-	};
-	xhr.send(null);
 }
 
 function getEntries() {

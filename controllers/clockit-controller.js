@@ -73,16 +73,10 @@ function updateEntry(request, response) {
 	});
 }
 
-function getTimeClocked(request, response) {
-	let entry_id = request.session.entry_id;
-	console.log(entry_id);
-}
-
 module.exports = {
 	getEntries: getEntries,
 	createEntry: createEntry,
 	updateEntry: updateEntry,
-	getTimeClocked: getTimeClocked
 	// clockIn: clockIn,
 	// clockOut: clockOut,
 	// isClockedIn: isClockedIn
