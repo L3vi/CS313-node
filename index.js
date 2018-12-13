@@ -18,7 +18,6 @@ app.use(express.static(path.join(__dirname, '/public/')))
 	// .set('views', path.join(__dirname, 'views'))
 	.get('/', (request, response) => {
 		// response.render('home');
-
 	})
 	.get('/entries', clockit.getEntries)
 	.post('/entries', clockit.createEntry)
