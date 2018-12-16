@@ -22,7 +22,7 @@ function login(request, response) {
 				console.log("Successfully logged in!");
 				response.redirect("home.html");
 			} else {
-				response.send(`DB Password: ${data.password}. Password: ${password}`);
+				response.send(`DB Password: ${data}. Password: ${password}`);
 				// response.send("That email/password combination does not exist.");
 			}
 		} else {
