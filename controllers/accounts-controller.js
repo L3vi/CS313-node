@@ -23,7 +23,7 @@ function login(request, response) {
 				response.redirect("home.html");
 			} else {
 				response.send(`DB Password: ${data.password}. Password: ${password}`);
-				response.send("That email/password combination does not exist.");
+				// response.send("That email/password combination does not exist.");
 			}
 		} else {
 			response.send("That email does not exist in our database.");
