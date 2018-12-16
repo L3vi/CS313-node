@@ -14,6 +14,7 @@ var workWeek = [
 var workWeekSmall = ["M", "Tu", "W", "Th", "F"];
 
 window.addEventListener("load", () => {
+	document.querySelector("#clockIt").addEventListener("click", clockIt);
 	getEntries();
 });
 
@@ -27,26 +28,23 @@ function clockIt() {
 	if (!clockedIn) {
 		displayClockOutButton(button);
 		createEntry();
+		clockIn();
 		clockedIn = true;
+		isClockedIn();
 	} else {
 		displayClockInButton(button);
 		update = '';
 		completeEntry();
+		clockOut();
 		clockedIn = false;
+		isClockedIn();
 	}
 }
 function pad(time) {
 	return time<10 ? '0' + time : time;
 }
 function displayTimeClockedIn() {
-	// current = new Date();
- //    var currentTime = new Time(startTime, current);
-
- //    if (isPressed == true) {
- //        document.querySelector('#timer').innerHTML = currentTime.display();
- //    }
-
-    var now = new Date().getTime();
+	var now = new Date().getTime();
 
 	// Find the distance between now and the count down date
 	if (typeof startTime != 'undefined') {
@@ -55,7 +53,6 @@ function displayTimeClockedIn() {
 	
 
 	// Time calculations for days, hours, minutes and seconds
-	var days = Math.floor(distance / (1000 * 60 * 60 * 24));
 	var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 	var seconds = Math.floor((distance % (1000 * 60)) / 1000);
@@ -66,8 +63,8 @@ function displayTimeClockedIn() {
 	if (clockedIn) {
 		document.querySelector("#timer").innerHTML = pad(hours) + ":"
 	+ pad(minutes) + ":" + pad(seconds);// + ":" + milliseconds + "ms ";
-	}
-	
+}
+
 }
 
 function displayClockOutButton(button) {
@@ -90,7 +87,8 @@ function getEntries() {
 			if (xhr.status === OK) {
 				var results = JSON.parse(xhr.responseText);
 				let timeSheet = createTimeSheet(results);
-				document.querySelector(".weekContent").innerHTML = timeSheet;
+				displayTotalHours(results);
+				document.querySelector("#weekContent").innerHTML = timeSheet;
 			} else {
 				console.log('Error: ' + xhr.status);
 			}
@@ -100,6 +98,18 @@ function getEntries() {
 	xhr.send(null);
 }
 
+function displayTotalHours(entries) {
+	var hours = entries.reduce((acc, entry) => {
+		if(isNaN(entry.total)) {
+			return acc + 0;
+		} else {
+			let entryHours = Math.floor((((entry.total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))) * 10) / 10;
+			return acc + entryHours;
+		}
+	}, 0);
+	document.querySelector("#total").innerHTML = `<p>${hours} Hours <img id='shareImg' class="rounded-circle" src='images/share.png'>`;
+}
+
 function createTimeSheet(entries) {
 	let timeSheet = "<table class='table table-striped table-dark table-hover'>";
 	timeSheet += "\n<thead>\n<tr>";
@@ -107,15 +117,31 @@ function createTimeSheet(entries) {
 	timeSheet += "\n</tr>\n</thead>\n<tbody>";
 
 	// entries.sort();
+	
 
 	entries.forEach(entry => {
+
+		var hours = Math.floor((entry.total % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		var minutes = Math.floor((entry.total % (1000 * 60 * 60)) / (1000 * 60));
+		var seconds = Math.floor((entry.total % (1000 * 60)) / 1000);
+		var total = 0;
+		if (minutes < 1 && hours < 1) {
+	        total = (seconds + " Second" + ((parseInt(seconds) == 1) ? '' : 's'));
+	    } else if (hours < 1) {
+	        total = (minutes + " Minute" +
+	                ((minutes > 2) ? 's' : ''));
+	    } else if (hours >= 1) {
+	        total = (hours + " Hour" +
+	                ((hours > 2) ? 's' : ''));
+	    }
+
 		// Display actual date
 		timeSheet += `<tr>\n<td>${entry.date}</td>\n`;
 		// Displays starting and ending TIMEs
 		timeSheet += `<td>${entry.start}</td>\n`;
 		timeSheet += `<td>${entry.end}</td>\n`;
 		// Calculate total hours/minutes worked
-		timeSheet += `<td>${entry.total}</td>\n`;
+		timeSheet += `<td>${total}</td>\n`;
 		timeSheet += `<td>${entry.notes}</td>\n`;
 	})
 	timeSheet += "\n</tbody>\n</table>";
@@ -208,7 +234,9 @@ function clockIn() {
 		if (xhr.readyState === DONE) {
 			if (xhr.status === OK) {
 				var results = JSON.parse(xhr.responseText);
-			} else { console.log('Error: ' + xhr.status); }
+			} else { 
+				console.log('Error: ' + xhr.status);
+			}
 		}
 	};
 	xhr.send(null);

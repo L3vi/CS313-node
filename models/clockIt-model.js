@@ -2,12 +2,12 @@
 
 // Implement pg for postgres SQL access
 const { Pool } = require('pg');
-const connectionString = process.env.DATABASE_URL || "postgres://clockituser:time@localhost:5432/clockit";;
+const connectionString = process.env.DATABASE_URL || "postgres://clockituser:time@localhost:5432/clockit";
 const pool = new Pool({connectionString: connectionString});
 
 
 function getEntriesFromDB(id, callback) {
-    let sql = 'SELECT * FROM timeentries WHERE activity_id = $1::int';
+    let sql = 'SELECT * FROM timeentries WHERE user_id = $1::int';
     let params = [id];
 
     pool.query(sql, params, (error, result) => {
@@ -22,7 +22,7 @@ function getEntriesFromDB(id, callback) {
 }
 
 function createEntryInDB(id, startDate, callback) {
-    let sql = 'INSERT INTO timeentries (starttime, activity_id) VALUES ($2, $1)';
+    let sql = 'INSERT INTO timeentries (starttime, user_id) VALUES ($2, $1)';
     let params = [id, startDate];
 
     pool.query(sql, params, (error, result) => {

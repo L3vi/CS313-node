@@ -27,21 +27,24 @@ app.use(express.static(path.join(__dirname, '/public/')))
 	.use(bodyParser.json())
 	.use(bodyParser.urlencoded({ extended: true }))
 	// .set('views', path.join(__dirname, 'views'))
-	.get('/', (request, response) => {
-		// response.render('home');
-	})
+	.get('/', clockit.verifyUser)
+	.post('/login', accounts.login)
+	.post('/register', accounts.register)
 	.get('/entries', clockit.getEntries)
 	.post('/entries', clockit.createEntry)
 	.get('/clockIn', (request, response) => {
 		request.session.isClockedIn = true;
 		console.log(request.session);
+		response.json('');
 	})
 	.get('/clockOut', (request, response) => {
 		request.session.isClockedIn = false;
 		console.log(request.session);
+		response.json('');
 	})
 	.get('/isClockedIn', (request, response) => {
 		console.log(request.session);
+		response.json(request.session.isClockedIn);
 	})
 	.put('/entries', clockit.updateEntry)
 	.get('/account', (request, response) => {

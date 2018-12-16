@@ -11,7 +11,6 @@ body {
     font-size: 10vw;
 }
 
-
 /* * * * * * * * * * *
 *   nav
 * * * * * * * * * * */
@@ -47,7 +46,7 @@ nav {
     color: white;
 }
 
-.export {
+#total {
     font-size: 3em;
     padding: 0.5em 0em;
 }
@@ -73,13 +72,17 @@ nav {
 }
 */
 
-.weekContent {
+#weekContent {
     font-size: 1.25em;
     width: 100%;
 }
 
-.weekContent table {
+#weekContent table {
+    border-radius: 1em;
+}
 
+#weekContent table th {
+    border-top: 0px;
 }
 
 #activitiesList input {
@@ -107,7 +110,7 @@ nav {
     /* * * * * * * * * * *
     *   timer
     * * * * * * * * * * */
-    .timer {
+    #timer {
         font-size: 9em;
 
     }
@@ -130,7 +133,7 @@ nav {
         width: 6em;
     }
 
-    .export {
+    #total {
         font-size: 5em;
         padding: 0.5em 0em;
     }
@@ -146,11 +149,15 @@ nav {
             content: "Someday";
         }
     */
-    .weekContent {
+    #weekContent {
         width: 80%;
     }
 
-    .weekContent table {
-
+    #weekContent table {
+        border-radius: 1em;
     }
-}
+
+    #weekContent table th {
+        border-top: 0px;
+        }
+}  
