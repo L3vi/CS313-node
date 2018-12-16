@@ -15,6 +15,7 @@ function login(request, response) {
 			response.send(`Error: ${error}`);
 		} else if (result.rowCount) {
 			// Set data to the data passed from the database
+			console.log(results);
 			let data = result.rows[0];
 			// If they got the password right, send them to the home page
 			if (data.password === password) {
@@ -22,6 +23,7 @@ function login(request, response) {
 				console.log("Successfully logged in!");
 				response.redirect("home.html");
 			} else {
+				console.log(data);
 				response.send(`DB Password: ${data}. Password: ${password}`);
 				// response.send("That email/password combination does not exist.");
 			}
