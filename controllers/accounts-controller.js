@@ -15,7 +15,7 @@ function login(request, response) {
 			response.send(`Error: ${error}`);
 		} else if (result.rowCount) {
 			// Set data to the data passed from the database
-			console.log(results);
+			console.log(result);
 			let data = result.rows[0];
 			// If they got the password right, send them to the home page
 			if (data.password === password) {
